@@ -1,0 +1,63 @@
+<fetch returntotalrecordcount="true" mapping="logical">
+  <entity name="systemuser">
+    <attribute name="systemuserid" />
+    <attribute name="fullname" />
+    <attribute name="domainname" />
+    <attribute name="applicationid" />
+    <attribute name="azureactivedirectoryobjectid" />
+    <attribute name="isdisabled" />
+    <attribute name="createdon" />
+
+    <!-- Who created the Dataverse user record -->
+    <link-entity name="systemuser"
+                 from="systemuserid"
+                 to="createdby"
+                 alias="creator"
+                 link-type="outer">
+      <attribute name="fullname" alias="createdby_fullname" />
+      <attribute name="domainname" alias="createdby_upn" />
+    </link-entity>
+
+    <!-- App user → roles -->
+    <link-entity name="systemuserroles"
+                 from="systemuserid"
+                 to="systemuserid"
+                 alias="sur"
+                 link-type="inner">
+
+      <link-entity name="role"
+                   from="roleid"
+                   to="roleid"
+                   alias="r"
+                   link-type="inner">
+        <attribute name="roleid" />
+        <attribute name="name" alias="role_name" />
+
+        <!-- Role → privileges (this is the key part) -->
+        <link-entity name="roleprivileges"
+                     from="roleid"
+                     to="roleid"
+                     alias="rp"
+                     link-type="inner">
+          <attribute name="privilegedepthmask" />
+
+          <link-entity name="privilege"
+                       from="privilegeid"
+                       to="privilegeid"
+                       alias="p"
+                       link-type="inner">
+            <attribute name="name" alias="privilege_name" />
+          </link-entity>
+
+        </link-entity>
+      </link-entity>
+    </link-entity>
+
+    <!-- Core condition: backed by Entra app registration -->
+    <filter type="and">
+      <condition attribute="applicationid" operator="not-null" />
+    </filter>
+
+    <order attribute="fullname" />
+  </entity>
+</fetch>
