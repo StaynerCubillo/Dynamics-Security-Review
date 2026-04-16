@@ -1,0 +1,27 @@
+<fetch returntotalrecordcount="true" mapping="logical">
+  <entity name="systemuser">
+    <attribute name="systemuserid" />
+    <attribute name="fullname" />
+    <attribute name="domainname" />
+    <attribute name="applicationid" />
+    <attribute name="azureactivedirectoryobjectid" />
+    <link-entity name="systemuser" from="systemuserid" to="createdby" alias="creator" link-type="outer">
+      <attribute name="fullname" alias="createdby_fullname" />
+      <attribute name="domainname" alias="createdby_upn" />
+    </link-entity>
+    <link-entity name="systemuserroles" from="systemuserid" to="systemuserid" alias="sur" link-type="inner">
+      <link-entity name="role" from="roleid" to="roleid" alias="r" link-type="inner">
+        <attribute name="roleid" />
+        <attribute name="name" />
+      </link-entity>
+    </link-entity>
+    <attribute name="isdisabled" />
+    <attribute name="createdon" />
+    <!-- Who created the Dataverse user record -->
+    <filter type="and">
+      <!-- Core condition: user is backed by an Entra app registration -->
+      <condition attribute="applicationid" operator="not-null" />
+    </filter>
+    <order attribute="fullname" />
+  </entity>
+</fetch>
