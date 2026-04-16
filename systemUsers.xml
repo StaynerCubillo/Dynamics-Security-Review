@@ -1,0 +1,14 @@
+<fetch returntotalrecordcount="true">
+  <entity name="systemuser">
+    <attribute name="systemuserid" />
+    <attribute name="fullname" />
+    <attribute name="domainname" />
+    <attribute name="applicationid" />
+    <attribute name="azureactivedirectoryobjectid" />
+    <attribute name="isdisabled" />
+    <filter type="and">
+      <condition attribute="fullname" operator="like" value="#%" />
+    </filter>
+    <order attribute="fullname" />
+  </entity>
+</fetch>

@@ -1,0 +1,11 @@
+<fetch returntotalrecordcount="true">
+  <entity name="role">
+    <attribute name="roleid" />
+    <attribute name="name" />
+    <filter type="or">
+      <condition attribute="name" operator="like" value="%System Administrator%" />
+      <condition attribute="name" operator="like" value="%System Customizer%" />
+    </filter>
+    <order attribute="name" />
+  </entity>
+</fetch>

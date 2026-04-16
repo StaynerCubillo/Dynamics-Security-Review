@@ -1,0 +1,63 @@
+# ------------------------------------------------------------
+# CONFIGURATION
+# ------------------------------------------------------------
+
+# Target export directory
+$exportPath = "C:\Users\v-staynercub\OneDrive - Microsoft\Documents\FetchXML_Queries\CSVs"
+
+# Output file name
+$csvFileName = "Dataverse_SystemUsers.csv"
+
+# ------------------------------------------------------------
+# ENSURE EXPORT DIRECTORY EXISTS
+# ------------------------------------------------------------
+
+if (-not (Test-Path $exportPath)) {
+    New-Item -ItemType Directory -Path $exportPath | Out-Null
+}
+
+# ------------------------------------------------------------
+# STEP 1: GET DATA FROM DATAVERSE
+# ------------------------------------------------------------
+
+$users = Get-CrmRecords `
+  -EntityLogicalName systemuser `
+  -Fields fullname, domainname, applicationid, isdisabled
+
+# ------------------------------------------------------------
+# STEP 2: DISPLAY COUNT
+# ------------------------------------------------------------
+
+$userCount = $users.CrmRecords.Count
+Write-Host "Total systemuser records retrieved:" $userCount
+
+# ------------------------------------------------------------
+# STEP 3: DISPLAY DATA (ON SCREEN)
+# ------------------------------------------------------------
+
+if ($userCount -gt 0) {
+    $users.CrmRecords |
+    Select fullname, domainname, applicationid, isdisabled |
+    Format-Table -AutoSize
+}
+else {
+    Write-Host "No records found."
+}
+
+# ------------------------------------------------------------
+# STEP 4: EXPORT DATA TO CSV
+# ------------------------------------------------------------
+
+if ($userCount -gt 0) {
+    $exportFile = Join-Path $exportPath $csvFileName
+
+    $users.CrmRecords |
+    Select fullname, domainname, applicationid, isdisabled |
+    Export-Csv $exportFile -NoTypeInformation -Encoding UTF8
+
+    Write-Host "CSV exported successfully to:"
+    Write-Host $exportFile
+}
+else {
+    Write-Host "Nothing to export. CSV not created."
+}

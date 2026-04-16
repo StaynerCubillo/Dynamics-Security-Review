@@ -1,0 +1,43 @@
+# Target environment (Power Platform EnvironmentName)
+$EnvironmentName = "Default-60c7d897-1ec9-4a3d-90e2-cd8a862f6a9d"
+
+# Get all apps in the environment
+$apps = Get-AdminPowerApp -EnvironmentName $EnvironmentName
+
+# Initialize results array
+$results = @()
+
+# Guard clause: no apps in the environment
+if ($apps.Count -eq 0) {
+    Write-Host "Environment $EnvironmentName contains no Power Apps."
+}
+else {
+    foreach ($app in $apps) {
+        try {
+            $contexts = Get-AdminPowerAppConditionalAccessAuthenticationContextIds `
+                -EnvironmentName $EnvironmentName `
+                -AppName $app.AppName
+
+            $results += [PSCustomObject]@{
+                AppDisplayName = $app.DisplayName
+                AppName        = $app.AppName
+                AppType        = $app.AppType
+                AuthContexts   = if ($contexts) { $contexts -join "," } else { "None" }
+            }
+        }
+        catch {
+            $results += [PSCustomObject]@{
+                AppDisplayName = $app.DisplayName
+                AppName        = $app.AppName
+                AppType        = $app.AppType
+                AuthContexts   = "Error"
+            }
+        }
+    }
+
+    # Export only if results exist
+    if ($results.Count -gt 0) {
+        $results | Export-Csv "AllApps_ConditionalAccess.csv" -NoTypeInformation
+        Write-Host "Export completed: AllApps_ConditionalAccess.csv"
+    }
+}

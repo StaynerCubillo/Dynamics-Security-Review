@@ -1,0 +1,27 @@
+<fetch returntotalrecordcount="true" mapping="logical">
+  <entity name="systemuser">
+    <attribute name="systemuserid" />
+    <attribute name="fullname" />
+    <attribute name="domainname" />
+    <attribute name="isdisabled" />
+    <attribute name="createdon" />
+
+    <!-- OUTER join to roles -->
+    <link-entity name="systemuserroles"
+                 from="systemuserid"
+                 to="systemuserid"
+                 alias="sur"
+                 link-type="outer">
+      <attribute name="systemuserid" />
+    </link-entity>
+
+    <!-- Keep only users with NO roles -->
+    <filter>
+      <condition entityname="sur"
+                 attribute="systemuserid"
+                 operator="null" />
+    </filter>
+
+    <order attribute="fullname" />
+  </entity>
+</fetch>

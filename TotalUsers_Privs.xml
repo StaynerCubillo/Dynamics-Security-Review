@@ -1,0 +1,27 @@
+<fetch returntotalrecordcount="true" mapping="logical" distinct="false">
+  <entity name="systemuser">
+    <!-- User identity -->
+    <attribute name="systemuserid" />
+    <attribute name="fullname" />
+    <attribute name="domainname" />
+    <attribute name="isdisabled" />
+    <attribute name="createdon" />
+
+    <!-- User → Roles (OUTER join is the key difference) -->
+    <link-entity name="systemuserroles"
+                 from="systemuserid"
+                 to="systemuserid"
+                 alias="sur"
+                 link-type="outer">
+      <link-entity name="role"
+                   from="roleid"
+                   to="roleid"
+                   alias="r"
+                   link-type="outer">
+        <attribute name="name" alias="role_name" />
+      </link-entity>
+    </link-entity>
+
+    <order attribute="fullname" />
+  </entity>
+</fetch>

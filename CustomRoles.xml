@@ -1,0 +1,8 @@
+<fetch returntotalrecordcount="true" mapping="logical">
+  <entity name="role">
+    <attribute name="name" />
+    <attribute name="roleid" />
+    <attribute name="businessunitid" />
+    <attribute name="parentrootroleid" />
+  </entity>
+</fetch>

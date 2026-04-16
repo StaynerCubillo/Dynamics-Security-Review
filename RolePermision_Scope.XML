@@ -1,0 +1,11 @@
+<fetch returntotalrecordcount="true" mapping="logical">
+  <entity name="role">
+    <attribute name="name" alias="role_name" />
+    <link-entity name="roleprivileges" from="roleid" to="roleid">
+      <attribute name="privilegedepthmask" />
+      <link-entity name="privilege" from="privilegeid" to="privilegeid">
+        <attribute name="name" alias="privilege_name" />
+      </link-entity>
+    </link-entity>
+  </entity>
+</fetch>

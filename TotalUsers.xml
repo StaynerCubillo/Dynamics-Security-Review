@@ -1,0 +1,8 @@
+<fetch returntotalrecordcount="true" mapping="logical">
+  <entity name="systemuser">
+    <attribute name="fullname" />
+    <attribute name="domainname" />
+    <attribute name="isdisabled" />
+    <attribute name="createdon" />
+  </entity>
+</fetch>

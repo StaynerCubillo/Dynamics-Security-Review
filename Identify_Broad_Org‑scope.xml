@@ -1,0 +1,15 @@
+<fetch returntotalrecordcount="true">
+  <entity name="role">
+    <attribute name="roleid" />
+    <attribute name="name" />
+    <attribute name="businessunitid" />
+    <attribute name="parentrootroleid" />
+    <order attribute="name" />
+    <link-entity name="roleprivileges" from="roleid" to="roleid" link-type="inner" alias="rp">
+      <attribute name="privilegedepthmask" />
+      <link-entity name="privilege" from="privilegeid" to="privilegeid" link-type="inner" alias="P">
+        <attribute name="name" />
+      </link-entity>
+    </link-entity>
+  </entity>
+</fetch>

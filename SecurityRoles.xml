@@ -1,0 +1,9 @@
+<fetch returntotalrecordcount="true">
+  <entity name="role">
+    <attribute name="roleid" />
+    <attribute name="name" />
+    <attribute name="businessunitid" />
+    <attribute name="parentrootroleid" />
+    <order attribute="name" />
+  </entity>
+</fetch>

@@ -1,0 +1,21 @@
+# Prereqs:
+# - Microsoft.PowerApps.Administration.PowerShell
+# - AzureAD module (or equivalent) to read group membership
+
+$EnvironmentName = "<ENVIRONMENT_ID>"          # e.g. GUID
+$GroupDisplayName = "<SECURITY_GROUP_NAME>"    # Entra group display name
+
+# Connect to Power Platform
+Add-PowerAppsAccount
+
+# Get environment (optional but used in the sample)
+$env = Get-AdminPowerAppEnvironment -EnvironmentName $EnvironmentName
+
+# Connect to Azure AD / Entra ID and retrieve group members
+Connect-AzureAD
+$group = Get-AzureADGroup | Where-Object { $_.DisplayName -eq $GroupDisplayName }
+$users = Get-AzureADGroupMember -ObjectId $group.ObjectId
+
+foreach ($user in $users) {
+  Add-AdminPowerAppsSyncUser -EnvironmentName $env.EnvironmentName -PrincipalObjectId $user.ObjectId
+}
