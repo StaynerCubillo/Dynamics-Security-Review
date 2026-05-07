@@ -1,0 +1,48 @@
+<fetch returntotalrecordcount="true" mapping="logical" distinct="false">
+  <entity name="systemuser">
+    <attribute name="systemuserid" />
+    <attribute name="fullname" />
+    <attribute name="domainname" />
+    <attribute name="isdisabled" />
+    <attribute name="azureactivedirectoryobjectid" />
+    <order attribute="fullname" />
+
+    <!-- Optional: focus on enabled human users (exclude app users) -->
+    <filter type="and">
+      <condition attribute="isdisabled" operator="eq" value="0" />
+      <condition attribute="applicationid" operator="null" />
+    </filter>
+
+    <!-- Direct role assignments: systemuser -> systemuserroles -> role -->
+    <link-entity name="systemuserroles" from="systemuserid" to="systemuserid" link-type="outer" alias="sur">
+      <link-entity name="role" from="roleid" to="roleid" link-type="outer" alias="dr">
+        <attribute name="roleid" alias="direct_role_id" />
+        <attribute name="name" alias="direct_role_name" />
+        <attribute name="businessunitid" alias="direct_role_businessunitid" />
+      </link-entity>
+    </link-entity>
+
+    <!-- Team-based role assignments: systemuser -> teammembership -> team -> teamroles -> role -->
+    <link-entity name="teammembership" from="systemuserid" to="systemuserid" link-type="outer" alias="tm">
+      <link-entity name="team" from="teamid" to="teamid" link-type="outer" alias="t">
+        <attribute name="teamid" alias="team_id" />
+        <attribute name="name" alias="team_name" />
+        <attribute name="azureactivedirectoryobjectid" alias="team_aad_group_objectid" />
+
+        <!-- Keep ONLY Entra group-backed teams in the output -->
+        <filter type="and">
+          <condition attribute="azureactivedirectoryobjectid" operator="not-null" />
+        </filter>
+
+        <link-entity name="teamroles" from="teamid" to="teamid" link-type="outer" alias="tr2">
+          <link-entity name="role" from="roleid" to="roleid" link-type="outer" alias="gr">
+            <attribute name="roleid" alias="group_role_id" />
+            <attribute name="name" alias="group_role_name" />
+            <attribute name="businessunitid" alias="group_role_businessunitid" />
+          </link-entity>
+        </link-entity>
+      </link-entity>
+    </link-entity>
+
+  </entity>
+</fetch>
