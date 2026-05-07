@@ -1,0 +1,25 @@
+<fetch returntotalrecordcount="true" mapping="logical" distinct="false">
+  <entity name="team">
+    <attribute name="teamid" />
+    <attribute name="name" />
+    <attribute name="businessunitid" />
+    <attribute name="teamtype" />
+    <attribute name="azureactivedirectoryobjectid" />
+    <order attribute="name" />
+
+    <!-- Filter: only Entra ID group-backed teams -->
+    <filter type="and">
+      <condition attribute="azureactivedirectoryobjectid" operator="not-null" />
+    </filter>
+
+    <!-- Team -> Roles -->
+    <link-entity name="teamroles" from="teamid" to="teamid" link-type="inner" alias="tr">
+      <link-entity name="role" from="roleid" to="roleid" link-type="inner" alias="r">
+        <attribute name="roleid" alias="role_id" />
+        <attribute name="name" alias="role_name" />
+        <attribute name="businessunitid" alias="role_businessunitid" />
+      </link-entity>
+    </link-entity>
+
+  </entity>
+</fetch>
